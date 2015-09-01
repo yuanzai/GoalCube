@@ -121,79 +121,87 @@ class Goal {
             this.name = name;
             this.activities = new ArrayList<Activity>();
         }
-
-        public View viewRoutine(Context c, Date date) {
-            LinearLayout ll = new LinearLayout(c);
-            ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            ll.setOrientation(LinearLayout.VERTICAL);
-            
-            TextView dateText = new TextView();
-            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-            dateText.setText(dateFormat.format(date));
-            ll.addView(dateText);
-            
-            Button editButton = new Button();
-            editButton.setText("Edit");
-            b.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Log.d(this.getClass().getSimpleName(),"Edit Button");
-                    //Intent intent = new Intent(v.getContext(), CreateGoalActivity.class);
-                    //startActivity(intent);
-                    //intent.putExtra(EXTRA_MESSAGE, goal_id);
-                }
-            });
-            
-            for (Activity act : activities) {
-                ll.addView(act.viewDataPointView(c));
-            }
-            return ll;
-        }
-        
-        public View editRoutine(Context c, Date date) {
-            LinearLayout ll = new LinearLayout(c);
-            ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            ll.setOrientation(LinearLayout.VERTICAL);
-            TextView dateText = new TextView();
-            
-            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-            dateText.setText(dateFormat.format(date));
-            
-            ll.addView(dateText);
-            
-            Button editButton = new Button();
-            editButton.setText("Save");
-            b.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Log.d(this.getClass().getSimpleName(),"Save Button");
-                    //Intent intent = new Intent(v.getContext(), CreateGoalActivity.class);
-                    //startActivity(intent);
-                    //intent.putExtra(EXTRA_MESSAGE, goal_id);
-                }
-            });
-            
-            for (Activity act : activities) {
-                ll.addView(act.addDataPointView(c));
-            }
-            return ll;
-        }
-        
-        public void saveRoutine() {
-            
-        }
     }
     
-    
-
     public void addActivityToDefaultRoutine(Activity act) {
         routines.get(0).activities.add(act);
     }
-
 }
 
-class GoalView extends LinearLayout{
+class GoalViewController {
+    Context c;
+    AppData ad;
+    Goal g;
+    Date date;
     
+    public GoalViewController(Context c, AppData ad, Goal g, Date date) {
+        this.c = c;
+        this.ad = ad;
+        this.g = g;
+        this.date = date;
+    }
+    
+    public View viewRoutine() {
+        LinearLayout ll = new LinearLayout(c);
+        ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        ll.setOrientation(LinearLayout.VERTICAL);
+        
+        TextView dateText = new TextView();
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        dateText.setText(dateFormat.format(date));
+        ll.addView(dateText);
+        
+        Button editButton = new Button();
+        editButton.setText("Edit");
+        b.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.d(this.getClass().getSimpleName(),"Edit Button");
+                //Intent intent = new Intent(v.getContext(), CreateGoalActivity.class);
+                //startActivity(intent);
+                //intent.putExtra(EXTRA_MESSAGE, goal_id);
+            }
+        });
+        
+        for (Activity act : activities) {
+            ll.addView(act.viewDataPointView(c));
+        }
+        return ll;
+    }
+    
+    public View editRoutine() {
+        LinearLayout ll = new LinearLayout(c);
+        ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        ll.setOrientation(LinearLayout.VERTICAL);
+        TextView dateText = new TextView();
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        dateText.setText(dateFormat.format(date));
+        ll.addView(dateText);
+        
+        Button editButton = new Button();
+        editButton.setText("Save");
+        b.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.d(this.getClass().getSimpleName(),"Save Button");
+                for (Activity act : activities) {
+                    act.;
+                }
+                c.saveGoals();
+                
+                //Intent intent = new Intent(v.getContext(), CreateGoalActivity.class);
+                //startActivity(intent);
+                //intent.putExtra(EXTRA_MESSAGE, goal_id);
+            }
+        });
+        
+        for (Activity act : activities) {
+            ll.addView(act.addDataPointView(c));
+        }
+        return ll;
+        
+        ll.addView(b);
+    }
 }
-
 // Boolean
 // Timing (Implies boolean)
 // Reps (Implies boolean) Max, targeted
@@ -203,11 +211,24 @@ class GoalView extends LinearLayout{
 
 abstract class Activity {
     String name;
+    abstract void saveDataPoint();
+}
+
+abstract class ActivityViewController {
+    Activity act;
+    Context c;
+    
     abstract View viewDataPointView(Context c, Date date);
     abstract View editDataPointView(Context c, Date date);
     abstract View addDataPointView(Context c, Date date);
     abstract View dataView();
-    abstract void saveDataPoint();
+
+    
+    public CountActivityViewController(Activity act, Context c){
+        self.act = act;
+        self.c = c;
+    }
+
 }
 
 class CountActivity extends Activity {
@@ -215,9 +236,8 @@ class CountActivity extends Activity {
     String units;
     boolean isIncreasing;
     ArrayList<DataPoint> data;
+    Date date;
     
-    // V
-    TextView measure; 
 
     public CountActivity(String name, String units, int target, boolean isIncreasing){
         this.name = name;
@@ -257,7 +277,14 @@ class CountActivity extends Activity {
     }
 
 
-    public View viewDataPointView(Context c) {
+
+}
+
+class CountActivityViewController extends ActivityViewController {
+    EditText count;
+    Date date;
+    
+    public View viewDataPointView() {
         LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout v = (LinearLayout) inflater.inflate(R.layout.act_count, null);
         v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -272,21 +299,26 @@ class CountActivity extends Activity {
         return null;
     }
     
-    public View addDataPointView(Context c) {
+    public View addDataPointView() {
         DataPoint dp = new DataPoint()
         LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout v = (LinearLayout) inflater.inflate(R.layout.act_count, null);
         EditText count = (EditText) v.findViewById(R.id.act_count_input);
-        count.setText("" + target);
+        count.setText("" + act.target);
         TextView measure = (TextView) v.findViewById(R.id.act_count_name);
-        measure.setText(name);
+        measure.setText(act.name);
 
         v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         Log.d(this.getClass().getSimpleName(),Integer.toString(target));
 
         return v;
     }
+    
+    public saveDataPoint() {
+        act.addPoint(new act.DataPoint(Integer.valueOf(count.getText()), date, date);
+    }
 }
+
 /*
 class MeasureActivity extends Activity {
     double measure;
