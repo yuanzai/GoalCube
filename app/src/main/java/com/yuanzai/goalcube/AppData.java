@@ -162,13 +162,13 @@ class GoalViewController {
             }
         });
         
-        for (Activity act : activities) {
+        for (Activity act : g.activities) {
             ll.addView(act.viewDataPointView(c));
         }
         return ll;
     }
     
-    public View editRoutine() {
+    public View addEditActivityDataPointInRoutine() {
         LinearLayout ll = new LinearLayout(c);
         ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -178,28 +178,31 @@ class GoalViewController {
         dateText.setText(dateFormat.format(date));
         ll.addView(dateText);
         
+
+        
+        for (Activity act : g.activities) {
+            ll.addView(act.getActivityViewController(c, date));
+        }
         Button editButton = new Button();
         editButton.setText("Save");
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d(this.getClass().getSimpleName(),"Save Button");
-                for (Activity act : activities) {
-                    act.;
+                for (Activity act : g.activities) {
+                    act.getActivityViewController.saveDataPoint();
                 }
                 c.saveGoals();
-                
+                ad.saveGoals();
                 //Intent intent = new Intent(v.getContext(), CreateGoalActivity.class);
                 //startActivity(intent);
                 //intent.putExtra(EXTRA_MESSAGE, goal_id);
             }
         });
+        ll.addView(b);
         
-        for (Activity act : activities) {
-            ll.addView(act.addDataPointView(c));
-        }
         return ll;
         
-        ll.addView(b);
+
     }
 }
 // Boolean
@@ -211,50 +214,36 @@ class GoalViewController {
 
 abstract class Activity {
     String name;
-    abstract void saveDataPoint();
+    abstract ActivityViewController getActivityViewController(Context c,Date date);
 }
 
 abstract class ActivityViewController {
-    Activity act;
-    Context c;
-    
-    abstract View viewDataPointView(Context c, Date date);
-    abstract View editDataPointView(Context c, Date date);
-    abstract View addDataPointView(Context c, Date date);
+    abstract View viewDataPointView();
+    abstract View updateDataPointView();
+    abstract View addDataPointView();
     abstract View dataView();
-
-    
-    public CountActivityViewController(Activity act, Context c){
-        self.act = act;
-        self.c = c;
-    }
-
+    abstract void saveDataPoint();
 }
 
 class CountActivity extends Activity {
     int target;
     String units;
     boolean isIncreasing;
-    ArrayList<DataPoint> data;
+    Map<Date, DataPoint> data;
     Date date;
     
-
     public CountActivity(String name, String units, int target, boolean isIncreasing){
         this.name = name;
         this.units = units;
         this.target = target;
         this.isIncreasing = isIncreasing;
-        this.data = new ArrayList<DataPoint>();
+        this.data = new Map<Date, DataPoint>();
     }
 
-    private static class DataPoint {
+    public static class DataPoint {
         int count;
         Date date;
         Date entered;
-        
-        public DataPoint() {
-            
-        }
         
         public DataPoint(int count, Date date, Date entered) {
             this.count = count;
@@ -262,37 +251,46 @@ class CountActivity extends Activity {
             this.entered = entered;
         }
     }
-
-    public DataPoint getPointByDate(Date date) {
-        for (DataPoint dp : data) {
-            if (dp.date.equals(date)) {
-                return dp;
-            }
-        }
-        return null;
+    
+    public ActivityViewController getActivityViewController(Context c, Date date) {
+        return new CountActivityViewController(this, c, date);
     }
-
-    public void addPoint(DataPoint dp) {
-        data.add(dp);
-    }
-
-
-
 }
 
 class CountActivityViewController extends ActivityViewController {
-    EditText count;
+    CountActivity act;
+    Context c;
     Date date;
     
+    EditText count;
+    
+    public CountActivityViewController(CountActivity act, Context c,Date date){
+        self.act = act;
+        self.c = c;
+        self.date = date;
+    }
+    
     public View viewDataPointView() {
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout v = (LinearLayout) inflater.inflate(R.layout.act_count, null);
-        v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
         return v;
     }
 
-    public View updateView() {
-        return null;
+    public View updateDataPointView() {
+        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout v = (LinearLayout) inflater.inflate(R.layout.act_count, null);
+        EditText count = (EditText) v.findViewById(R.id.act_count_input);
+        count.setText("" + act.get(date).count);
+        TextView measure = (TextView) v.findViewById(R.id.act_count_name);
+        measure.setText(act.name);
+        
+        TextView units = (TextView) v.findViewById(R.id.act_count_units);
+        measure.setText(act.units);
+
+        v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        Log.d(this.getClass().getSimpleName(),Integer.toString(target));
+
+        return v;
+
     }
 
     public View dataView() {
@@ -300,7 +298,6 @@ class CountActivityViewController extends ActivityViewController {
     }
     
     public View addDataPointView() {
-        DataPoint dp = new DataPoint()
         LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout v = (LinearLayout) inflater.inflate(R.layout.act_count, null);
         EditText count = (EditText) v.findViewById(R.id.act_count_input);
@@ -315,7 +312,7 @@ class CountActivityViewController extends ActivityViewController {
     }
     
     public saveDataPoint() {
-        act.addPoint(new act.DataPoint(Integer.valueOf(count.getText()), date, date);
+        act.data.put(date, new act.DataPoint(Integer.valueOf(count.getText()), date, date);
     }
 }
 
