@@ -207,7 +207,7 @@ class GoalViewController {
 }
 // Boolean
 // Timing (Implies boolean)
-// Reps (Implies boolean) Max, targeted
+// Set Reps (Implies boolean) Max, targeted
 // Count (Implies boolean) Ascending, untargeted, with base
 // Distance (Implies boolean)
 // Weight (Implies boolean)
