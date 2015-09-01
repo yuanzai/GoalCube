@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GoalCube</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_create_goal">CreateGoalActivity</string>
+    <string name="title_activity_act">ActActivity</string>
+    <string name="title_activity_view_goal">ViewGoalActivity</string>
+</resources>
