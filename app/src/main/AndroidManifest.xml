@@ -33,6 +33,10 @@
             android:name=".ViewGoalActivity"
             android:label="@string/title_activity_view_goal" >
         </activity>
+        <activity
+            android:name=".CreateActivityActivity"
+            android:label="@string/title_activity_create" >
+        </activity>
     </application>
 
 </manifest>

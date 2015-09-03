@@ -3,7 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_edit">Edit Goal</string>
     <string name="title_activity_create_goal">CreateGoalActivity</string>
     <string name="title_activity_act">ActActivity</string>
     <string name="title_activity_view_goal">ViewGoalActivity</string>
+    <string name="title_activity_create">CreateActivityActivity</string>
 </resources>

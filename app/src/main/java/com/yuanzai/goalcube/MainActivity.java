@@ -89,6 +89,9 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_edit) {
+            Intent intent = new Intent(this, CreateActivityActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

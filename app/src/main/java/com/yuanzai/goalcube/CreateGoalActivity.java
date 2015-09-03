@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.Date;
+
 
 public class CreateGoalActivity extends ActionBarActivity {
     public final static String EXTRA_MESSAGE = "com.yuanzai.goalcube.ACTIVITY_MESSAGE";
@@ -36,7 +38,9 @@ public class CreateGoalActivity extends ActionBarActivity {
         LinearLayout ll2 = new LinearLayout(this);
         //ll2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         //ll2.setOrientation(LinearLayout.VERTICAL);
-        View tv = g.routines.get(0).viewRoutine(this);
+        GoalViewController vc = new GoalViewController(this, ad,  g, new Date());
+
+        View tv = vc.addEditActivityDataPointInRoutine();
         //ll.addView(ll2);
         ll.addView(tv);
         setContentView(ll);
